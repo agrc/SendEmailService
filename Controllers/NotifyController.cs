@@ -1,14 +1,17 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 using AttributeRouting.Web.Http;
 
 namespace SendEmailService.Controllers
 {
     public class NotifyController : ApiController
     {
-        [POST("{id")]
-        public string Get(int id)
+        [GET("Notify"), HttpGet]
+        public HttpResponseMessage CreateResource([FromUri] string[] ids)
         {
-            return "value";
+            // Simple parameters are assumed to come from the URL by default. So use [FromBody]
+            return Request.CreateResponse(HttpStatusCode.OK, string.Join(",", ids));
         }
     }
 }
