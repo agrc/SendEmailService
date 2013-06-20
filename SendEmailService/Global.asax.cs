@@ -1,10 +1,13 @@
 ﻿using System.Web.Http;
 using System.Web.Mvc;
+using Ninject;
 
 namespace SendEmailService
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class App : System.Web.HttpApplication
     {
+        public static IKernel Kernel { get; set; }
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
