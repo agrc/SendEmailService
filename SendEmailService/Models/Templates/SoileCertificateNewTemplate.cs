@@ -4,16 +4,14 @@ using SendEmailService.Models.Database;
 namespace SendEmailService.Models.Templates
 {
     [Template]
-    public class SoilCertificateCopyTemplate : IEmailTemplate
+    public class SoileCertificateNewTemplate : IEmailTemplate
     {
-        private string _body =
-            @"There was a request sent from {{url}} for a **copy** of a Soil Certificate of Compliance.
+        private string _body = @"There was a request sent from {{url}} for a new Soil Certificate of Compliance.
 
-Name: {{name}}  
-Address: {{address}}  
-Phone: {{phone}}  
+Name: {{name}}
+Address: {{address}}
+Phone: {{phone}}
 Email: {{email}}";
-
         private string _subject = "Request for new Soil Certificate of Compliance";
 
         private string[] _variableNames = new[]
