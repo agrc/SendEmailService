@@ -1,5 +1,6 @@
 using Ninject;
 using Ninject.Web.Common;
+using SendEmailService.Ninject;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SendEmailService.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SendEmailService.App_Start.NinjectWebCommon), "Stop")]
@@ -10,8 +11,6 @@ namespace SendEmailService.App_Start
     using System.Web;
 
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
-    using Ninject;
 
     public static class NinjectWebCommon 
     {
@@ -44,7 +43,7 @@ namespace SendEmailService.App_Start
             App.Kernel = new StandardKernel();
             App.Kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             App.Kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-
+            
             RegisterServices(App.Kernel);
             return App.Kernel;
         }
