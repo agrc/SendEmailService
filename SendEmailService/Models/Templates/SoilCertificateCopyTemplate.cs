@@ -21,7 +21,13 @@ Email: {{email}}";
                 "url", "name", "address", "phone", "email"
             };
 
-        public int Id { get; set; }
+        private int _id = 1;
+
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
         public string Subject
         {
