@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using NUnit.Framework;
 using Raven.Client;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
@@ -32,22 +35,22 @@ namespace SendEmailService.Tests
                         });
 
                     s.Store(new Emails
-                    {
-                        Id = 2,
-                        Email = "2"
-                    });
+                        {
+                            Id = 2,
+                            Email = "2"
+                        });
 
                     s.Store(new Emails
-                    {
-                        Id = 3,
-                        Email = "3"
-                    });
+                        {
+                            Id = 3,
+                            Email = "3"
+                        });
 
                     s.Store(new Emails
-                    {
-                        Id = 4,
-                        Email = "4s"
-                    });
+                        {
+                            Id = 4,
+                            Email = "4"
+                        });
 
                     s.SaveChanges();
                 }
@@ -74,6 +77,27 @@ namespace SendEmailService.Tests
                     var from = session.Load<Emails>(email.FromId).Email;
 
                     Assert.That(from, Is.EqualTo("1"));
+                }
+            }
+
+            [Test]
+            public void CanGetEmailsFromMultipleIds()
+            {
+                var email = new EmailInformation
+                    {
+                        ToIds = new List<int> {1, 3, 4}
+                    };
+
+                using (var session = _documentStore.OpenSession())
+                {
+                    var to = new Collection<string>();
+
+                    foreach(var id in email.ToIds)
+                    {
+                        to.Add(session.Load<Emails>(id).Email);
+                    }
+
+                    Assert.That(to.Count(), Is.EqualTo(3));
                 }
             }
         }
