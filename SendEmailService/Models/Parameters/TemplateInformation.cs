@@ -1,4 +1,4 @@
-﻿namespace SendEmailService.Models
+﻿namespace SendEmailService.Models.Parameters
 {
     public class TemplateInformation
     {

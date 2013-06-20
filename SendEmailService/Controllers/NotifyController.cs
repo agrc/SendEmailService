@@ -1,10 +1,12 @@
-﻿using System.Net;
+﻿using System.Collections.ObjectModel;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using AttributeRouting.Web.Http;
 using Raven.Client;
-using Raven.Client.Linq;
 using SendEmailService.Models;
+using SendEmailService.Models.Database;
+using SendEmailService.Models.Parameters;
 
 namespace SendEmailService.Controllers
 {
@@ -22,7 +24,15 @@ namespace SendEmailService.Controllers
             using (var session = DocumentStore.OpenSession())
             {
                 var from = session.Load<Emails>(email.FromId).Email;
-                var to = session.Query<Emails>().Where(x => email.ToIds.Contains(x.Id));
+
+                var to = new Collection<string>();
+
+                foreach (var id in email.ToIds)
+                {
+                    to.Add(session.Load<Emails>(id).Email);
+                }
+
+
             }
 
             // Simple parameters are assumed to come from the URL by default. So use [FromBody]

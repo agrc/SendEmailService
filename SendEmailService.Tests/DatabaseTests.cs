@@ -7,6 +7,7 @@ using Raven.Client.Embedded;
 using Raven.Client.Indexes;
 using SendEmailService.Indexes;
 using SendEmailService.Models;
+using SendEmailService.Models.Database;
 
 namespace SendEmailService.Tests
 {

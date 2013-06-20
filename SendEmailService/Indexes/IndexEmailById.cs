@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Raven.Client.Indexes;
-using SendEmailService.Models;
+using SendEmailService.Models.Database;
 
 namespace SendEmailService.Indexes
 {

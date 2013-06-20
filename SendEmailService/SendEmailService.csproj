@@ -128,17 +128,21 @@
     <Compile Include="App_Start\AttributeRoutingHttpConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
+    <Compile Include="App_Start\TemplateConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\TemplateAttribute.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\RavenApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Indexes\IndexEmailById.cs" />
-    <Compile Include="Models\EmailInformation.cs" />
+    <Compile Include="Models\Parameters\EmailInformation.cs" />
     <Compile Include="Models\Reponse.cs" />
-    <Compile Include="Models\TemplateInformation.cs" />
-    <Compile Include="Models\Emails.cs" />
+    <Compile Include="Models\Parameters\TemplateInformation.cs" />
+    <Compile Include="Models\Database\Emails.cs" />
+    <Compile Include="Models\Database\IEmailTemplate.cs" />
+    <Compile Include="Models\Templates\SoilCertificateTemplate.cs" />
     <Compile Include="Ninject\RavenModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace SendEmailService.Models
+﻿namespace SendEmailService.Models.Database
 {
     public class Emails
     {
