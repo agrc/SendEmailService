@@ -1,8 +1,15 @@
-﻿namespace SendEmailService.Models.Database
+﻿using SendEmailService.Models.Recipients;
+
+namespace SendEmailService.Models.Database
 {
-    public class Emails
+    public class Emails : IEmailable
     {
-        public int Id { get; set; }
+        public Emails(string email)
+        {
+            Email = email;
+        }
+
+        public string Id { get; set; }
         public string Email { get; set; }
     }
 }

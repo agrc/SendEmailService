@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace SendEmailService.Models
+namespace SendEmailService.Models.Parameters
 {
     public class EmailInformation
     {
-        public List<int> ToIds { get; set; }
-        public int FromId { get; set; }
+        public List<string> ToIds { get; set; }
+        public string FromId { get; set; }
     }
 }

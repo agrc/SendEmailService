@@ -1,17 +1,19 @@
 ﻿using SendEmailService.Attributes;
 using SendEmailService.Models.Database;
 
-namespace SendEmailService.Models.Templates
+namespace SendEmailService.Models.EmailTemplates
 {
     [Template]
-    public class SoileCertificateNewTemplate : IEmailTemplate
+    public class SoilCertificateCopyTemplate : IEmailTemplate
     {
-        private string _body = @"There was a request sent from {{url}} for a new Soil Certificate of Compliance.
+        private string _body =
+            @"There was a request sent from {{url}} for a **copy** of a Soil Certificate of Compliance.
 
-Name: {{name}}
-Address: {{address}}
-Phone: {{phone}}
+Name: {{name}}  
+Address: {{address}}  
+Phone: {{phone}}  
 Email: {{email}}";
+
         private string _subject = "Request for new Soil Certificate of Compliance";
 
         private string[] _variableNames = new[]
@@ -19,7 +21,8 @@ Email: {{email}}";
                 "url", "name", "address", "phone", "email"
             };
 
-        private int _id = 2;
+        private int _id = 1;
+        private string _name = "PC.Soil.Copy";
 
         public int Id
         {
@@ -43,6 +46,12 @@ Email: {{email}}";
         {
             get { return _variableNames; }
             private set { _variableNames = value; }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            private set { _name = value; }
         }
     }
 }

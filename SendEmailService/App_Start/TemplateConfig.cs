@@ -19,14 +19,19 @@ namespace SendEmailService
 
             using (var session = documentStore.OpenSession())
             {
-                foreach (var instance in from template in templates
-                                         where typeof (IEmailTemplate).IsAssignableFrom(template)
-                                         select Activator.CreateInstance(template) as IEmailTemplate)
+                foreach (var instance in templates)
                 {
-                    if (session.Query<IEmailTemplate>().Any(x => x.Id == instance.Id))
+                    if (!typeof(IEmailTemplate).IsAssignableFrom(instance))
                         continue;
 
-                    session.Store(instance);
+                    var t = Activator.CreateInstance(instance) as IEmailTemplate;
+
+                    if (session.Query<Templates>().Any(x => x.Name == t.Name))
+                        continue;
+
+                    var template = new Templates(t.Subject, t.Body, t.VariableNames, t.Name);
+
+                    session.Store(template);
                 }
 
                 session.SaveChanges();

@@ -6,5 +6,6 @@
         string Subject { get; }
         string Body { get; }
         string[] VariableNames { get; }
+        string Name { get; }
     }
 }

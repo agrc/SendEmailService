@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Web.Http;
 using AttributeRouting.Web.Http;
 using Raven.Client;
@@ -19,8 +20,7 @@ namespace SendEmailService.Controllers
         [GET("Notify"), HttpGet]
         public HttpResponseMessage CreateResource([FromUri] EmailInformation email,
                                                   [FromUri] TemplateInformation template)
-        {
-
+        {            
             using (var session = DocumentStore.OpenSession())
             {
                 var from = session.Load<Emails>(email.FromId).Email;

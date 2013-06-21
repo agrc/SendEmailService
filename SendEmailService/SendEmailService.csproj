@@ -128,10 +128,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingHttpConfig.cs" />
+    <Compile Include="App_Start\EmailConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\TemplateConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\RecipientAttribute.cs" />
     <Compile Include="Attributes\TemplateAttribute.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\RavenApiController.cs" />
@@ -140,13 +142,17 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Indexes\IndexEmailById.cs" />
+    <Compile Include="Models\Database\Templates.cs" />
+    <Compile Include="Models\Recipients\IEmailable.cs" />
+    <Compile Include="Models\Recipients\JimBlankenau.cs" />
     <Compile Include="Models\Parameters\EmailInformation.cs" />
     <Compile Include="Models\Reponse.cs" />
     <Compile Include="Models\Parameters\TemplateInformation.cs" />
     <Compile Include="Models\Database\Emails.cs" />
     <Compile Include="Models\Database\IEmailTemplate.cs" />
-    <Compile Include="Models\Templates\SoilCertificateCopyTemplate.cs" />
-    <Compile Include="Models\Templates\SoileCertificateNewTemplate.cs" />
+    <Compile Include="Models\EmailTemplates\SoilCertificateCopyTemplate.cs" />
+    <Compile Include="Models\EmailTemplates\SoileCertificateNewTemplate.cs" />
+    <Compile Include="Models\Sender\UtahNoReply.cs" />
     <Compile Include="Ninject\NinjectResolver.cs" />
     <Compile Include="Ninject\NinjectScope.cs" />
     <Compile Include="Ninject\RavenModule.cs" />

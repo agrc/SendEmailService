@@ -15,7 +15,10 @@ namespace SendEmailService
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            TemplateConfig.SeedDatabaseTemplates(Assembly.GetCallingAssembly());
+            
+            var assemblyToScan = Assembly.GetExecutingAssembly();
+            TemplateConfig.SeedDatabaseTemplates(assemblyToScan);
+            EmailConfig.SeedDatabaseEmailRecipients(assemblyToScan);
         }
     }
 }

@@ -8,6 +8,7 @@ using Raven.Client.Indexes;
 using SendEmailService.Indexes;
 using SendEmailService.Models;
 using SendEmailService.Models.Database;
+using SendEmailService.Models.Parameters;
 
 namespace SendEmailService.Tests
 {
@@ -29,28 +30,24 @@ namespace SendEmailService.Tests
                 //arrange
                 using (var s = _documentStore.OpenSession())
                 {
-                    s.Store(new Emails
+                    s.Store(new Emails("1")
                         {
-                            Id = 1,
-                            Email = "1"
+                            Id = "1"
                         });
 
-                    s.Store(new Emails
+                    s.Store(new Emails("2")
                         {
-                            Id = 2,
-                            Email = "2"
+                            Id = "2"
                         });
 
-                    s.Store(new Emails
+                    s.Store(new Emails("3")
                         {
-                            Id = 3,
-                            Email = "3"
+                            Id = "3"
                         });
 
-                    s.Store(new Emails
+                    s.Store(new Emails("4")
                         {
-                            Id = 4,
-                            Email = "4"
+                            Id = "4"
                         });
 
                     s.SaveChanges();
@@ -70,7 +67,7 @@ namespace SendEmailService.Tests
             {
                 var email = new EmailInformation
                     {
-                        FromId = 1
+                        FromId = "1"
                     };
 
                 using (var session = _documentStore.OpenSession())
@@ -86,7 +83,7 @@ namespace SendEmailService.Tests
             {
                 var email = new EmailInformation
                     {
-                        ToIds = new List<int> {1, 3, 4}
+                        ToIds = new List<string> {"1", "3", "4"}
                     };
 
                 using (var session = _documentStore.OpenSession())
