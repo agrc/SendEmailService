@@ -10,6 +10,7 @@ namespace SendEmailService.Ninject
         {
             App.Kernel = kernel;
         }
+
         public IDependencyScope BeginScope()
         {
             return new NinjectScope(App.Kernel.BeginBlock());

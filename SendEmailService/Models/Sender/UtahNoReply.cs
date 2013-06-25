@@ -6,17 +6,20 @@ namespace SendEmailService.Models.Sender
     [Recipient]
     public class UtahNoReply : IEmailable
     {
-        private const string EmailAddress = "no-reply@utah.gov";
-        private const string IdNumber = "2";
-
-        public string Email
+        public UtahNoReply()
         {
-            get { return EmailAddress; }
+            Email = "noreply@utah.gov";
+            EmailId = 2;
         }
 
-        public string Id
+        public UtahNoReply(string email, int emailId)
         {
-            get { return IdNumber; }
+            Email = email;
+            EmailId = emailId;
         }
+
+        public string Email { get; private set; }
+
+        public int EmailId { get; private set; }
     }
 }

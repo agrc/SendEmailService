@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http.Dependencies;
-using Ninject.Activation;
 using Ninject.Parameters;
 using Ninject.Syntax;
 
@@ -19,19 +18,19 @@ namespace SendEmailService.Ninject
 
         public object GetService(Type serviceType)
         {
-            IRequest request = resolutionRoot.CreateRequest(serviceType, null, new Parameter[0], true, true);
+            var request = resolutionRoot.CreateRequest(serviceType, null, new Parameter[0], true, true);
             return resolutionRoot.Resolve(request).SingleOrDefault();
         }
 
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            IRequest request = resolutionRoot.CreateRequest(serviceType, null, new Parameter[0], true, true);
+            var request = resolutionRoot.CreateRequest(serviceType, null, new Parameter[0], true, true);
             return resolutionRoot.Resolve(request).ToList();
         }
 
         public void Dispose()
         {
-            IDisposable disposable = (IDisposable)resolutionRoot;
+            var disposable = (IDisposable) resolutionRoot;
             if (disposable != null) disposable.Dispose();
             resolutionRoot = null;
         }

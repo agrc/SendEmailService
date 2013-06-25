@@ -21,15 +21,15 @@ namespace SendEmailService
             {
                 foreach (var instance in templates)
                 {
-                    if (!typeof(IEmailTemplate).IsAssignableFrom(instance))
+                    if (!typeof (IEmailTemplate).IsAssignableFrom(instance))
                         continue;
 
                     var t = Activator.CreateInstance(instance) as IEmailTemplate;
 
-                    if (session.Query<Templates>().Any(x => x.Name == t.Name))
+                    if (session.Query<Templates>().Any(x => x.TemplateId == t.TemplateId))
                         continue;
 
-                    var template = new Templates(t.Subject, t.Body, t.VariableNames, t.Name);
+                    var template = new Templates(t.TemplateId, t.Subject, t.Body);
 
                     session.Store(template);
                 }

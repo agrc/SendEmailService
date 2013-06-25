@@ -6,6 +6,7 @@ using Ninject;
 using Raven.Client;
 using SendEmailService.Attributes;
 using SendEmailService.Extensions;
+using SendEmailService.Indexes;
 using SendEmailService.Models.Database;
 using SendEmailService.Models.Recipients;
 
@@ -22,17 +23,17 @@ namespace SendEmailService
             {
                 foreach (var instance in templates)
                 {
-                    if (!typeof(IEmailable).IsAssignableFrom(instance))
+                    if (!typeof (IEmailable).IsAssignableFrom(instance))
                         continue;
 
                     var recipient = Activator.CreateInstance(instance) as IEmailable;
 
-                    if (session.Query<Emails>().Any(x => x.Email == recipient.Email))
+                    if (session.Query<Emails, EmailByIdIndex>().Any(x => x.EmailId == recipient.EmailId))
                         continue;
 
-                    var email = new Emails(recipient.Email);
+                    var email = new Emails(recipient.Email, recipient.EmailId);
 
-                    session.Store(email, "Emails/" + recipient.Id);
+                    session.Store(email);
                 }
 
                 session.SaveChanges();

@@ -1,8 +1,19 @@
-﻿namespace SendEmailService.Models
+﻿using Newtonsoft.Json;
+
+namespace SendEmailService.Models
 {
-    public class Reponse
+    public sealed class Reponse : Errorable
     {
-        public string Message { get; set; }
+        public Reponse()
+        {
+            Status = 200;
+            Error = new RestEndpointError();
+        }
+
+        [JsonProperty(PropertyName = "status")]
         public int Status { get; set; }
+
+        [JsonProperty(PropertyName = "message")]
+        public string Message { get; set; }
     }
 }

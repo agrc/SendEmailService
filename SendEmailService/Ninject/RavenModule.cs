@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using Ninject.Activation;
+﻿using Ninject.Activation;
 using Ninject.Modules;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
+using SendEmailService.Indexes;
 
 namespace SendEmailService.Ninject
 {
@@ -19,11 +19,11 @@ namespace SendEmailService.Ninject
         private static IDocumentStore Init(IContext context)
         {
             var documentStore = new DocumentStore
-            {
-                ConnectionStringName = "RavenDb"
-            }.Initialize();
+                {
+                    ConnectionStringName = "RavenDb"
+                }.Initialize();
 
-            IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), documentStore);
+            IndexCreation.CreateIndexes(typeof(EmailByIdIndex).Assembly, documentStore);
 
             return documentStore;
         }

@@ -1,10 +1,16 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
+using System.Net.Mail;
 using System.Web.Http;
 using AttributeRouting.Web.Http;
+using MarkdownMailer;
+using Ninject;
 using Raven.Client;
+using SendEmailService.Commands;
+using SendEmailService.Commands.Infrastructure;
+using SendEmailService.Indexes;
 using SendEmailService.Models;
 using SendEmailService.Models.Database;
 using SendEmailService.Models.Parameters;
@@ -17,25 +23,104 @@ namespace SendEmailService.Controllers
         {
         }
 
-        [GET("Notify"), HttpGet]
-        public HttpResponseMessage CreateResource([FromUri] EmailInformation email,
-                                                  [FromUri] TemplateInformation template)
-        {            
-            using (var session = DocumentStore.OpenSession())
+        [Inject]
+        public IMailSender MailMain { get; set; }
+
+        [POST("Notify"), HttpPost]
+        public HttpResponseMessage SendMail(ParameterInformation parameters)
+        {
+            var email = parameters.Email;
+            var template = parameters.Template;
+            string fromAddress;
+            Templates templateContent;
+            var to = new List<string>();
+            var response = new Reponse();
+
+            #region validation
+
+            if (email == null || !email.FromId.HasValue)
             {
-                var from = session.Load<Emails>(email.FromId).Email;
-
-                var to = new Collection<string>();
-
-                foreach (var id in email.ToIds)
-                {
-                    to.Add(session.Load<Emails>(id).Email);
-                }
-
-
+                response.Error.Details.Add("From address cannot be empty.");
             }
 
-            // Simple parameters are assumed to come from the URL by default. So use [FromBody]
+            if (email == null || email.ToIds == null || !email.ToIds.Any())
+            {
+                response.Error.Details.Add("To addresses cannot be empty.");
+            }
+
+            if (template == null || !template.TemplateId.HasValue)
+            {
+                response.Error.Details.Add("Template cannot be empty.");
+            }
+
+            if (!response.IsSuccessful)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new Reponse
+                    {
+                        Status = (int) HttpStatusCode.BadRequest
+                    });
+            }
+
+            #endregion
+
+            using (var session = DocumentStore.OpenSession())
+            {
+                fromAddress = session.Query<Emails, EmailByIdIndex>()
+                                     .Single(x => x.EmailId == email.FromId).Email;
+
+                to = session.Advanced.LuceneQuery<Emails, EmailByIdIndex>()
+                            .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
+                            .Select(x => x.Email).ToList();
+
+                templateContent = session.Query<Templates, TemplateByIdIndex>()
+                                         .Single(x => x.TemplateId == template.TemplateId);
+            }
+
+            #region validation
+
+            if (string.IsNullOrEmpty(fromAddress))
+            {
+                response.Error.Details.Add(string.Format("From address was not found. From id: {0}", email.FromId));
+            }
+
+            if (!to.Any())
+            {
+                response.Error.Details.Add(string.Format("To addresses was not found. To id: {0}.",
+                                                         string.Join(",", email.ToIds)));
+            }
+
+            if (templateContent == null)
+            {
+                response.Error.Details.Add(string.Format("Template was not found. Template id: {0}.",
+                                                         template.TemplateId));
+            }
+
+            if (!response.IsSuccessful)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, new Reponse
+                    {
+                        Status = (int) HttpStatusCode.BadRequest
+                    });
+            }
+
+            #endregion
+
+            var command = new RenderTemplateCommand(templateContent, template.TemplateValues);
+
+            var content = CommandExecutor.ExecuteCommand(command);
+
+            var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(fromAddress),
+                    Subject = templateContent.Subject,
+                    Body = content,
+                    IsBodyHtml = true
+                };
+
+            to.ForEach(mailMessage.To.Add);
+
+            MailMain.Send(mailMessage);
+
             return Request.CreateResponse(HttpStatusCode.OK, new Reponse
                 {
                     Message = "Email Sent Successfully",

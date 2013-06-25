@@ -5,17 +5,20 @@ namespace SendEmailService.Models.Recipients
     [Recipient]
     public class JimBlankenau : IEmailable
     {
-        private const string IdNumber = "1";
-        private const string EmailAddress = "jim.blankenau@parkcity.org";
-
-        public string Email
+        public JimBlankenau()
         {
-            get { return EmailAddress; }
+            Email = "jim.blankenau@parkcity.org";
+            EmailId = 1;
         }
 
-        public string Id
+        public JimBlankenau(string email, int emailId)
         {
-            get { return IdNumber; }
+            Email = email;
+            EmailId = emailId;
         }
+
+        public string Email { get; private set; }
+
+        public int EmailId { get; private set; }
     }
 }

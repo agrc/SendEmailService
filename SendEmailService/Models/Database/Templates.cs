@@ -2,18 +2,15 @@
 {
     public class Templates : IEmailTemplate
     {
-        public Templates(string subject, string body, string[] variableNames, string name)
+        public Templates(int templateId, string subject, string body)
         {
+            TemplateId = templateId;
             Subject = subject;
             Body = body;
-            VariableNames = variableNames;
-            Name = name;
         }
 
-        public int Id { get; set; }
+        public int TemplateId { get; set; }
         public string Subject { get; private set; }
         public string Body { get; private set; }
-        public string[] VariableNames { get; private set; }
-        public string Name { get; private set; }
     }
 }

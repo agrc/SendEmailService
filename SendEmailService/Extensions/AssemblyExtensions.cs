@@ -6,12 +6,12 @@ using System.Reflection;
 namespace SendEmailService.Extensions
 {
     /// <summary>
-    ///   Assembly extensions
+    ///     Assembly extensions
     /// </summary>
     public static class AssemblyExtensions
     {
         /// <summary>
-        ///   Gets the class types decorated by an attribute in assembly.
+        ///     Gets the class types decorated by an attribute in assembly.
         /// </summary>
         /// <param name="assembly"> The assembly to search through. </param>
         /// <param name="attributeType"> The attribute type to find. </param>
