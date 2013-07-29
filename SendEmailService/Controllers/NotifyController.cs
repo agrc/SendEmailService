@@ -55,10 +55,8 @@ namespace SendEmailService.Controllers
 
             if (!response.IsSuccessful)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, new Reponse
-                    {
-                        Status = (int) HttpStatusCode.BadRequest
-                    });
+                response.Status = (int)HttpStatusCode.BadRequest;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, response);
             }
 
             #endregion

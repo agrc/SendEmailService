@@ -59,6 +59,7 @@ namespace SendEmailService.Tests
                 using (var session = _documentStore.OpenSession())
                 {
                     var fromAddress = session.Query<Emails, EmailByIdIndex>()
+                                             .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite())
                                              .Single(x => x.EmailId == email.FromId).Email;
 
                     Assert.That(fromAddress, Is.EqualTo("1"));
@@ -76,6 +77,7 @@ namespace SendEmailService.Tests
                 using (var session = _documentStore.OpenSession())
                 {
                     var to = session.Advanced.LuceneQuery<Emails, EmailByIdIndex>()
+                                    .WaitForNonStaleResultsAsOfLastWrite()
                                     .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
                                     .Select(x => x.Email).ToList();
 

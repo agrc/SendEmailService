@@ -29,6 +29,7 @@ namespace SendEmailService.Commands
             }
 
             content = Render.StringToString(Template.Body, Variables);
+            content = Render.StringToString(content, Variables);
 
             Result = content;
         }
