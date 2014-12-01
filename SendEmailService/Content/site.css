@@ -1,0 +1,23 @@
+body {
+  margin: 0 auto;
+  background-color: white;
+  font-family: Georgia, Palatino, serif;
+  color: #333333; /* dark gray not black */
+  line-height: 1;
+  font-size: 18px;
+}
+
+.splash {
+  margin: 25px
+   auto 0 auto; width: 600px;
+  text-align: center
+}
+
+.title {
+  margin-top: 25px;
+  color: #111111;
+  font-weight: 400;
+  font-size: 200%;
+  padding: 0;
+  font-variant: small-caps;
+}
