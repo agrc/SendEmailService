@@ -359,7 +359,7 @@
 
 	req.eval =
 		function(text, hint){
-			return eval_(text + "\r\n////@ sourceURL=" + hint);
+			return eval_(text + "\r\n//# sourceURL=" + hint);
 		};
 
 	//
@@ -4012,6 +4012,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 
 		// create dojo, dijit, and dojox
 		// FIXME: in 2.0 remove dijit, dojox being created by dojo
+		global = (function () { return this; })(),
 		dijit = {},
 		dojox = {},
 		dojo = {
@@ -4020,7 +4021,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 
 			// notice dojo takes ownership of the value of the config module
 			config:config,
-			global:this,
+			global:global,
 			dijit:dijit,
 			dojox:dojox
 		};
@@ -4069,7 +4070,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 		item = scopeMap[p];
 		item[1]._scopeName = item[0];
 		if(!config.noGlobals){
-			this[item[0]] = item[1];
+			global[item[0]] = item[1];
 		}
 	}
 	dojo.scopeMap = scopeMap;
@@ -4081,7 +4082,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 	dojo.isAsync = ! 1  || require.async;
 	dojo.locale = config.locale;
 
-	var rev = "$Rev: e124479 $".match(/[0-9a-f]{7,}/);
+	var rev = "$Rev: f4fef70 $".match(/[0-9a-f]{7,}/);
 	dojo.version = {
 		// summary:
 		//		Version number of the Dojo Toolkit
@@ -4094,7 +4095,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 		//		- flag: String: Descriptor flag. If total version is "1.2.0beta1", will be "beta1"
 		//		- revision: Number: The Git rev from which dojo was pulled
 
-		major: 1, minor: 10, patch: 0, flag: "",
+		major: 1, minor: 10, patch: 4, flag: "",
 		revision: rev ? rev[0] : NaN,
 		toString: function(){
 			var v = dojo.version;
@@ -6076,7 +6077,7 @@ define(["require", "module"], function(require, module){
 				window.location == location && window.document == document,
 
 			// has API variables
-			global = this,
+			global = (function () { return this; })(),
 			doc = isBrowser && document,
 			element = doc && doc.createElement("DiV"),
 			cache = (module.config && module.config()) || {};
@@ -11264,7 +11265,7 @@ define(["exports", "./sniff", "./_base/lang", "./dom", "./dom-style", "./dom-pro
 
 	function _hasAttr(node, name){
 		var attr = node.getAttributeNode && node.getAttributeNode(name);
-		return attr && attr.specified; // Boolean
+		return !!attr && attr.specified; // Boolean
 	}
 	
 	// There is a difference in the presence of certain properties and their default values
@@ -11668,24 +11669,24 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 		//		a fragment, and allowing for a convenient optional attribute setting step,
 		//		as well as an optional DOM placement reference.
 		//
-		//		Attributes are set by passing the optional object through `dojo.setAttr`.
-		//		See `dojo.setAttr` for noted caveats and nuances, and API if applicable.
+		//		Attributes are set by passing the optional object through `dojo/dom-attr.set`.
+		//		See `dojo/dom-attr.set` for noted caveats and nuances, and API if applicable.
 		//
-		//		Placement is done via `dojo.place`, assuming the new node to be the action
-		//		node, passing along the optional reference node and position.
+		//		Placement is done via `dojo/dom-construct.place`, assuming the new node to be
+		//		the action node, passing along the optional reference node and position.
 		// tag: DOMNode|String
 		//		A string of the element to create (eg: "div", "a", "p", "li", "script", "br"),
 		//		or an existing DOM node to process.
 		// attrs: Object
 		//		An object-hash of attributes to set on the newly created node.
 		//		Can be null, if you don't want to set any attributes/styles.
-		//		See: `dojo.setAttr` for a description of available attributes.
+		//		See: `dojo/dom-attr.set` for a description of available attributes.
 		// refNode: DOMNode|String?
-		//		Optional reference node. Used by `dojo.place` to place the newly created
+		//		Optional reference node. Used by `dojo/dom-construct.place` to place the newly created
 		//		node somewhere in the dom relative to refNode. Can be a DomNode reference
 		//		or String ID of a node.
 		// pos: String?
-		//		Optional positional reference. Defaults to "last" by way of `dojo.place`,
+		//		Optional positional reference. Defaults to "last" by way of `dojo/domConstruct.place`,
 		//		though can be set to "first","after","before","last", "replace" or "only"
 		//		to further control the placement of the new node relative to the refNode.
 		//		'refNode' is required if a 'pos' is specified.
@@ -11703,8 +11704,8 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 		//
 		// example:
 		//		Place a new DIV in the BODY, with no attributes set
-		//	|	require(["dojo/dom-construct"], function(domConstruct){
-		//	|		var n = domConstruct.create("div", null, dojo.body());
+		//	|	require(["dojo/dom-construct", "dojo/_base/window"], function(domConstruct, win){
+		//	|		var n = domConstruct.create("div", null, win.body());
 		//	|	});
 		//
 		// example:
@@ -11721,8 +11722,8 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 		//
 		// example:
 		//		Create an anchor, with an href. Place in BODY:
-		//	|	require(["dojo/dom-construct"], function(domConstruct){
-		//	|		domConstruct.create("a", { href:"foo.html", title:"Goto FOO!" }, dojo.body());
+		//	|	require(["dojo/dom-construct", "dojo/_base/window"], function(domConstruct, win){
+		//	|		domConstruct.create("a", { href:"foo.html", title:"Goto FOO!" }, win.body());
 		//	|	});
 
 		var doc = win.doc;
@@ -11847,9 +11848,24 @@ define([
 		return has('native-xhr') && typeof new XMLHttpRequest().responseType !== 'undefined';
 	});
 
+	has.add('native-xhr2-blob', function(){
+		if(!has('native-response-type')){ return; }
+		var x = new XMLHttpRequest();
+		x.open('GET', '/', true);
+		x.responseType = 'blob';
+		// will not be set if unsupported
+		var responseType = x.responseType;
+		x.abort();
+		return responseType === 'blob';
+	});
+
 	// Google Chrome doesn't support "json" response type
 	// up to version 30, so it's intentionally not included here
-	var nativeResponseTypes = {'blob': 1, 'document': 1, 'arraybuffer': 1};
+	var nativeResponseTypes = {
+		'blob': has('native-xhr2-blob') ? 'blob' : 'arraybuffer',
+		'document': 'document',
+		'arraybuffer': 'arraybuffer'
+	};
 
 	function handleResponse(response, error){
 		var _xhr = response.xhr;
@@ -12013,7 +12029,7 @@ define([
 			}
 
 			if(has('native-response-type') && options.handleAs in nativeResponseTypes) {
-				_xhr.responseType = options.handleAs;
+				_xhr.responseType = nativeResponseTypes[options.handleAs];
 			}
 
 			var headers = options.headers,
@@ -12456,7 +12472,7 @@ define(["./_base/kernel", "./sniff"], function(dojo, has){
 },
 'dojo/domReady':function(){
 define(['./has'], function(has){
-	var global = this,
+	var global = (function () { return this; })(),
 		doc = document,
 		readyStates = { 'loaded': 1, 'complete': 1 },
 		fixReadyState = typeof doc.readyState != "string",
@@ -12496,7 +12512,7 @@ define(['./has'], function(has){
 			try{
 				(readyQ.shift())(doc);
 			}catch(err){
-				console.log("Error on domReady callback: " + err);
+				console.error(err, "in domReady callback", err.stack);
 			}
 		}
 
@@ -13522,7 +13538,7 @@ define(["./_base/kernel", "./on", "./has", "./dom", "./_base/window"], function(
 		//		mouseenter and mouseleave event emulation.
 		// example:
 		//		To use these events, you register a mouseenter like this:
-		//		|	define(["dojo/on", dojo/mouse"], function(on, mouse){
+		//		|	define(["dojo/on", "dojo/mouse"], function(on, mouse){
 		//		|		on(targetNode, mouse.enter, function(event){
 		//		|			dojo.addClass(targetNode, "highlighted");
 		//		|		});
@@ -15229,17 +15245,22 @@ define([
 	var activeTimeout = false;
 	var unhandledWait = 1000;
 	function trackUnhandledRejections(error, handled, rejection, deferred){
-		if(handled){
-			arrayUtil.some(errors, function(obj, ix){
-				if(obj.error === error){
-					errors.splice(ix, 1);
-					return true;
+		// try to find the existing tracking object
+		if(!arrayUtil.some(errors, function(obj){
+			if(obj.error === error){
+				// found the tracking object for this error
+				if(handled){
+					// if handled, update the state
+					obj.handled = true;
 				}
-			});
-		}else if(!arrayUtil.some(errors, function(obj){ return obj.error === error; })){
+				return true;
+			}
+		})){
+			// no tracking object has been setup, create one
 			errors.push({
 				error: error,
 				rejection: rejection,
+				handled: handled,
 				deferred: deferred,
 				timestamp: new Date().getTime()
 			});
@@ -15254,8 +15275,12 @@ define([
 		var now = new Date().getTime();
 		var reportBefore = now - unhandledWait;
 		errors = arrayUtil.filter(errors, function(obj){
+			// only report the error if we have waited long enough and
+			// it hasn't been handled
 			if(obj.timestamp < reportBefore){
-				logError(obj.error, obj.rejection, obj.deferred);
+				if(!obj.handled){
+					logError(obj.error, obj.rejection, obj.deferred);
+				}
 				return false;
 			}
 			return true;
@@ -15616,6 +15641,30 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 		has.add("event-focusin", function(global, doc, element){
 			return 'onfocusin' in element;
 		});
+		
+		if(has("touch")){
+			has.add("touch-can-modify-event-delegate", function(){
+				// This feature test checks whether deleting a property of an event delegate works
+				// for a touch-enabled device. If it works, event delegation can be used as fallback
+				// for browsers such as Safari in older iOS where deleting properties of the original
+				// event does not work.
+				var EventDelegate = function(){};
+				EventDelegate.prototype =
+					document.createEvent("MouseEvents"); // original event
+				// Attempt to modify a property of an event delegate and check if
+				// it succeeds. Depending on browsers and on whether dojo/on's
+				// strict mode is stripped in a Dojo build, there are 3 known behaviors:
+				// it may either succeed, or raise an error, or fail to set the property
+				// without raising an error.
+				try{
+					var eventDelegate = new EventDelegate;
+					eventDelegate.target = null;
+					return eventDelegate.target === null;
+				}catch(e){
+					return false; // cannot use event delegation
+				}
+			});
+		}
 	}
 	var on = function(target, type, listener, dontFix){
 		// summary:
@@ -15633,7 +15682,7 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 		//		event.
 		// description:
 		//		To listen for "click" events on a button node, we can do:
-		//		|	define(["dojo/on"], function(listen){
+		//		|	define(["dojo/on"], function(on){
 		//		|		on(button, "click", clickHandler);
 		//		|		...
 		//		Evented JavaScript objects can also have their own events.
@@ -15642,7 +15691,7 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 		//		And then we could publish a "foo" event:
 		//		|	on.emit(obj, "foo", {key: "value"});
 		//		We can use extension events as well. For example, you could listen for a tap gesture:
-		//		|	define(["dojo/on", "dojo/gesture/tap", function(listen, tap){
+		//		|	define(["dojo/on", "dojo/gesture/tap", function(on, tap){
 		//		|		on(button, tap, tapHandler);
 		//		|		...
 		//		which would trigger fooHandler. Note that for a simple object this is equivalent to calling:
@@ -15821,7 +15870,7 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 		//		Indicates if children elements of the selector should be allowed. This defaults to 
 		//		true
 		// example:
-		// |	require(["dojo/on", "dojo/mouse", "dojo/query!css2"], function(listen, mouse){
+		// |	require(["dojo/on", "dojo/mouse", "dojo/query!css2"], function(on, mouse){
 		// |		on(node, on.selector(".my-class", mouse.enter), handlerForMyHover);
 		return function(target, listener){
 			// if the selector is function, use it to select the node, otherwise use the matches method
@@ -15839,7 +15888,9 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 				// call select to see if we match
 				var eventTarget = select(event.target);
 				// if it matches we call the listener
-				return eventTarget && listener.call(eventTarget, event);
+				if (eventTarget) {
+					return listener.call(eventTarget, event);
+				}
 			});
 		};
 	};
@@ -16102,7 +16153,7 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 		};
 	}
 	if(has("touch")){ 
-		var Event = function(){};
+		var EventDelegate = function(){};
 		var windowOrientation = window.orientation; 
 		var fixTouchListener = function(listener){ 
 			return function(originalEvent){ 
@@ -16116,20 +16167,22 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 				if(!event){
 					var type = originalEvent.type;
 					try{
-						delete originalEvent.type; // on some JS engines (android), deleting properties make them mutable
+						delete originalEvent.type; // on some JS engines (android), deleting properties makes them mutable
 					}catch(e){} 
 					if(originalEvent.type){
-						// deleting properties doesn't work (older iOS), have to use delegation
-						if(has('mozilla')){
-							// Firefox doesn't like delegated properties, so we have to copy
-							var event = {};
+						// Deleting the property of the original event did not work (this is the case of
+						// browsers such as older Safari iOS), hence fallback:
+						if(has("touch-can-modify-event-delegate")){
+							// If deleting properties of delegated event works, use event delegation:
+							EventDelegate.prototype = originalEvent;
+							event = new EventDelegate;
+						}else{
+							// Otherwise last fallback: other browsers, such as mobile Firefox, do not like
+							// delegated properties, so we have to copy
+							event = {};
 							for(var name in originalEvent){
 								event[name] = originalEvent[name];
 							}
-						}else{
-							// old iOS branch
-							Event.prototype = originalEvent;
-							var event = new Event;
 						}
 						// have to delegate methods to make them work
 						event.preventDefault = function(){
@@ -16780,7 +16833,7 @@ var ret = {
 	 },
 	 =====*/
 
-	doc: this["document"] || null,
+	doc: dojo.global["document"] || null,
 	/*=====
 	doc: {
 		// summary:
@@ -17402,11 +17455,12 @@ return {
 				p!="has" && has.add(prefix + p, featureSet[p], 0, booting);
 			}
 		};
+		var global = (function () { return this; })();
 		result =  1  ?
 			// must be a built version of the dojo loader; all config stuffed in require.rawConfig
 			require.rawConfig :
 			// a foreign loader
-			this.dojoConfig || this.djConfig || {};
+			global.dojoConfig || global.djConfig || {};
 		adviseHas(result, "config", 1);
 		adviseHas(result.has, "", 1);
 	}
@@ -17690,6 +17744,10 @@ define([
 	}
 
 	var handleNativeResponse = function(response) {
+		if(!has('native-xhr2-blob') && response.options.handleAs === 'blob' && typeof Blob !== 'undefined'){
+			return new Blob([ response.xhr.response ], { type: response.xhr.getResponseHeader('Content-Type') });
+		}
+
 		return response.xhr.response;
 	}
 

@@ -216,3 +216,6 @@ pip-log.txt
 
 #raven
 db/
+SendEmailService.Tests/Raven.Studio.Html5.zip
+SendEmailService.Tests/Scripts/dojo.js
+SendEmailService.Tests/Scripts/dojo.js.uncompressed.js
