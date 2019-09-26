@@ -26,7 +26,8 @@ namespace SendEmailService.Controllers
         [Inject]
         public IMailSender MailMain { get; set; }
 
-        [POST("Notify"), HttpPost]
+        [HttpPost]
+        [Route("notify")]
         public HttpResponseMessage SendMail(ParameterInformation parameters)
         {
             var email = parameters.Email;

@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
-using System.Web.Http.Cors;
 using Newtonsoft.Json;
+using SendEmailService.Handlers;
 using SendEmailService.Ninject;
 
 namespace SendEmailService
@@ -12,8 +12,9 @@ namespace SendEmailService
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
 
-            var corsPolicy = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(corsPolicy);
+            config.MessageHandlers.Add(new CorsHandler());
+
+            config.MapHttpAttributeRoutes();
 
             GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(App.Kernel);
 
