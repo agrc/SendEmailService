@@ -66,9 +66,9 @@ namespace SendEmailService.Controllers
                 fromAddress = session.Query<Emails, EmailByIdIndex>()
                                      .Single(x => x.EmailId == email.FromId).Email;
 
-                to = session.Advanced.LuceneQuery<Emails, EmailByIdIndex>()
-                            .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
-                            .Select(x => x.Email).ToList();
+                to = session.Advanced.DocumentQuery<Emails, EmailByIdIndex>()
+                    .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
+                    .Select(x => x.Email).ToList();
 
                 templateContent = session.Query<Templates, TemplateByIdIndex>()
                                          .Single(x => x.TemplateId == template.TemplateId);

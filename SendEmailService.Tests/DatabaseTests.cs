@@ -76,10 +76,15 @@ namespace SendEmailService.Tests
 
                 using (var session = _documentStore.OpenSession())
                 {
-                    var to = session.Advanced.LuceneQuery<Emails, EmailByIdIndex>()
-                                    .WaitForNonStaleResultsAsOfLastWrite()
-                                    .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
-                                    .Select(x => x.Email).ToList();
+//                    var to = session.Advanced.LuceneQuery<Emails, EmailByIdIndex>()
+//                                    .WaitForNonStaleResultsAsOfLastWrite()
+//                                    .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
+//                                    .Select(x => x.Email).ToList();
+
+                    var to = session.Advanced.DocumentQuery<Emails, EmailByIdIndex>()
+                        .WaitForNonStaleResultsAsOfLastWrite()
+                        .Where(string.Format("EmailId:({0})", string.Join(" OR ", email.ToIds)))
+                        .Select(x => x.Email).ToList();
 
                     Assert.That(to.Count(), Is.EqualTo(3));
                 }
